@@ -1,12 +1,8 @@
 {
-  "extends": ["react-app", "airbnb"],
+  "extends": ["react-app"],
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "import/prefer-default-export": "off",
-    "no-console": 2,
-    "react-hooks/exhaustive-deps": 1,
-    "no-unused-expression": 0,
-    "no-unused-vars": 1,
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "linebreak-style" : "off"
   }
 }
