@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import UserProfile from "../dashboard/UserProfile"; // UseProfile을 UserProfile로 수정
 import AuthButton from "../dashboard/AuthButton";
+import InputField from "../common/InputField";
 
 function Header() {
   const isLoggedIn = false; // 이후 상태 관리로 변경
@@ -18,11 +19,9 @@ function Header() {
 
           {/* 검색창 */}
           <div className="flex-1 max-w-2xl mx-8">
-            <input
-              type="text"
-              placeholder="찾으시는 상품을 검색해보세요"
-              className="w-full px-4 py-2 rounded-full border-2 border-gyoguma focus:border-gyoguma-dark outline-none"
-            />
+            <InputField
+            type='text'
+            placeholder='검색' />
           </div>
 
           {/* 네비게이션 */}
