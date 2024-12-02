@@ -5,12 +5,14 @@ const InputField = (props) => {
         type='text',
         placeholder='text',
         className='w-full px-4 py-2 rounded-md  border-2 border-gyoguma focus:border-gyoguma-dark outline-none',
+        onChange=null,
     } = props
     return (
         <input
             type={type}
             placeholder={placeholder}
             className={className}
+            onChange={onChange}
         />
     )
 }
