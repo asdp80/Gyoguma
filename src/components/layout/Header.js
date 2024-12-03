@@ -13,7 +13,7 @@ function Header() {
         <div className="flex items-center justify-between">
           {/* 로고 */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="교구마" className="h-10" />
+            <img src="/logo.png" alt="교구마" className="h-10" />
             <span className="text-gyoguma-dark font-bold text-xl">교구마</span>
           </Link>
 
