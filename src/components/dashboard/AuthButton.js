@@ -7,7 +7,7 @@ function AuthButton() {
   return (
     <div className="flex items-center gap-4">
       <Link
-        to="/login"
+        to="/auth"
         className="text-gyoguma-dark hover:text-gyoguma"
       >
         로그인
