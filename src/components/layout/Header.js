@@ -3,9 +3,13 @@ import { Link } from "react-router-dom";
 import UserProfile from "../dashboard/UserProfile"; // UseProfile을 UserProfile로 수정
 import AuthButton from "../dashboard/AuthButton";
 import InputField from "../common/InputField";
+import { useCallback, useState } from "react";
 
 function Header() {
+  const [searchText, setSearchText] = useState('')
   const isLoggedIn = false; // 이후 상태 관리로 변경
+
+  const onSearchChange = useCallback(e => {setSearchText(e.target.value)},[])
 
   return (
     <header className="bg-white shadow-md">
@@ -13,7 +17,7 @@ function Header() {
         <div className="flex items-center justify-between">
           {/* 로고 */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="교구마" className="h-10" />
+            <img src="/images/logo.png" alt="교구마" className="h-10" />
             <span className="text-gyoguma-dark font-bold text-xl">교구마</span>
           </Link>
 
@@ -21,8 +25,11 @@ function Header() {
           <div className="flex-1 max-w-2xl mx-8">
             <InputField
             type='text'
-            placeholder='검색' />
+            placeholder='검색'
+            value={searchText}
+            onChange={onSearchChange}/>
           </div>
+          {/* !!!!중요 : onChange를 반드시 지정할 것!!!! */}
 
           {/* 네비게이션 */}
           <nav className="flex items-center gap-6">
