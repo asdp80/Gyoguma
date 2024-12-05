@@ -5,7 +5,7 @@ const DropDownSelector = (props) => {
     const {
         name='',
         value='',
-        onChange='',
+        onChange=null,
         className='',
         options=[]
     } = props
@@ -17,8 +17,8 @@ const DropDownSelector = (props) => {
             value={value}
             onChange={onChange}
             className={clsx(baseClass,className)}>
-            {options.map(({value, text, key}) => (
-                <option key={key} value={value}>{text}</option>
+            {options.map((option, index) => (
+                <option key={index} value={option.value}>{option.text}</option>
             ))}
         </select>
     )

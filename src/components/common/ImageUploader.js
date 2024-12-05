@@ -2,12 +2,10 @@
 // 상품 이미지, 프로필 이미지 업로드에 사용
 // 다중 업로드 가능
 import { useState } from "react";
-import axios from "axios";
-import ImageCarousel from "../product/ImageCarousel";
 
 const ImageUploader = (props) => {
     const [uploadImgUrls, setUploadImgUrls] = useState([]);
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const {setSelectedFiles} = props // 상위 폼에서 사용할 제출 State
 
     const onChangeImageUpload = (e) => {
         const { files } = e.target;
@@ -31,31 +29,7 @@ const ImageUploader = (props) => {
         setSelectedFiles((prevFiles) => [...prevFiles, ...fileArray]);
     };
 
-    const onUploadImages = async () => {
-        if (selectedFiles.length === 0) { //이미지가 없다면?
-            alert("업로드할 이미지를 선택하세요!");
-            return;
-        }
-
-        const formData = new FormData(); // FormData를 이용해 파일 그대로 보낼 수 있다.
-        selectedFiles.forEach((file, index) => {
-            formData.append(`images[${index}]`, file); // 키는 추후 수정 가능
-        });
-
-        try {
-            const response = await axios.post("http://YOUR-API-URI-HERE/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-
-            console.log("이미지 업로드 성공:", response.data);
-            alert("이미지 업로드가 완료되었습니다!");
-        } catch (error) {
-            console.error("이미지 업로드 실패:", error);
-            alert("이미지 업로드 중 오류가 발생했습니다.");
-        }
-    };
+    
 
     return (
         <>
@@ -83,12 +57,6 @@ const ImageUploader = (props) => {
                     className="hidden"
                 />
             </label>
-            <button
-                className="mt-4 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
-                onClick={onUploadImages}
-            >
-                업로드하기
-            </button>
         </div>
         </>
     );
