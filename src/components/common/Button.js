@@ -8,7 +8,7 @@ const Button = (props) => {
         onClick=null, 
         className='',
         isLink=false,
-        Link='#'
+        Link='/'
     } = props
     // 기본 스타일, clsx를 통해 붙여줌
     const baseClass='px-4 py-2 bg-gyoguma text-white rounded-lg hover:bg-gyoguma-dark'

@@ -3,8 +3,9 @@
 // 다중 업로드 가능
 import { useState } from "react";
 import axios from "axios";
+import ImageCarousel from "../product/ImageCarousel";
 
-const ImageUploader = () => {
+const ImageUploader = (props) => {
     const [uploadImgUrls, setUploadImgUrls] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -57,8 +58,9 @@ const ImageUploader = () => {
     };
 
     return (
+        <>
+        {/* 이미지 업로더 전체 크기 및 형태에 관여함 */}
         <div className="flex flex-col items-center gap-5 p-5 border-2 border-dashed border-gray-400 rounded-md max-w-4xl mx-auto bg-gray-100">
-        {/* ^ 이미지 업로더 전체 크기 및 형태에 관여함 */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full">
                 {uploadImgUrls.map((url, index) => (
                     <img
@@ -88,6 +90,7 @@ const ImageUploader = () => {
                 업로드하기
             </button>
         </div>
+        </>
     );
 };
 
