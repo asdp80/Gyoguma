@@ -11,7 +11,6 @@ import ChatroomPage from "./pages/ChatroomPage";
 import MyPage from "./pages/MyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductListPage from "./pages/ProductListPage";
-import WritePage from "./pages/WritePage";
 
 function App() {
   return (
@@ -27,10 +26,7 @@ function App() {
           {/* 카테고리 및 상품 관련 */}
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/products" element={<ProductListPage />} />
-          <Route path="/products/:productId" element={<ProductDetailPage />} />
-
-          {/* 상품 작성 관련 */}
-          <Route path="/write" element={<WritePage />} />
+          <Route path="/products/:id" element={<ProductDetailPage />} />
 
           {/* 채팅 관련 라우트들을 계층적으로 구성 */}
           <Route path="/chat" element={<ChatPage />} />

@@ -1,15 +1,32 @@
-// 개별 상품 컴포넌트
-// 상품 썸네일, 가격, 제목, 이름 표시
+// src/components/category/ProductCard.js
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-// const ProductCard = ({ product, layout = 'vertical' }) => {
-//     // 레이아웃에 따라 다른 스타일 적용
-//     const cardStyle = layout === 'horizontal'
-//         ? 'flex-shrink-0 w-64 mr-4' // 가로 스크롤을 위한 스타일
-//         : 'w-full mb-4';            // 세로 리스트를 위한 스타일
-//
-//     return (
-//         <div className={`product-card ${cardStyle}`}>
-//             {/* 카드 내용 */}
-//         </div>
-//     );
-// };
+const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  if (!product) return null;
+// 임시 이미지 URL 수정
+  const placeholderImage = `https://via.placeholder.com/200x150`;
+
+  return (
+    <div onClick={() => navigate(`/products/${product.id}`)} className="...">
+      <div className="...">
+        <img
+          src={product.imageUrl || placeholderImage}
+          alt={product.title}
+          className="..."
+        />
+        <div className="...">
+          <h3 className="...">{product.title}</h3>
+          <div className="...">
+            <span className="...">{product.nickname}</span>
+          </div>
+          <p className="...">{product.price?.toLocaleString()}원</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default React.memo(ProductCard);
