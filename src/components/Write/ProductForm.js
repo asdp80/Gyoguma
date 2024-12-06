@@ -1,8 +1,14 @@
 // 상품 등록/수정 폼
 // 이미지 업로드, 카테고리, 위치, 시간 등 선택
 import React, { useState } from 'react';
+import axios from 'axios';
 import InputField from '../common/InputField';
 import DropDownSelector from '../common/DropDownSelector';
+import TextArea from '../common/TextArea';
+import ImageUploader from '../common/ImageUploader';
+import { redirect } from 'react-router-dom';
+import Button from '../common/Button';
+import WritePlace from './WritePlace';
 
 export default function ProductForm() {
   // 상품 정보를 관리하는 상태입니다
@@ -10,14 +16,19 @@ export default function ProductForm() {
     title: '',
     price: '',
     description: '',
-    category: 0
+    category: '0',
+    place: '0',
   });
+  const [selectedFiles, setSelectedFiles] = useState([])
 
   // 피드백 정보를 관리하는 상태입니다
   const [feedback, setFeedback] = useState({
     titleLength: 0,
     titleValid: true,
-    priceValid: true
+    priceValid: true,
+    categoryValid : true,
+    imageValid : true,
+    placeValid : true,
   });
 
   // 입력 필드 값이 변경될 때 호출되는 함수입니다
@@ -44,6 +55,22 @@ export default function ProductForm() {
         priceValid: numberValue > 0 && numberValue <= 10000000
       }));
     }
+
+    if (name === 'category') {
+      const numberCategory = Number(value)
+      setFeedback(prev => ({
+        ...prev,
+        categoryValid : numberCategory > 0 && numberCategory <= 4
+      }))
+    }
+
+    if (name === 'place') {
+      const numberPlace = Number(value)
+      setFeedback(prev => ({
+        ...prev,
+        placeValid : numberPlace > 0
+      }))
+    }
   };
 
   // 폼 작성 진행률을 계산하는 함수입니다
@@ -55,12 +82,39 @@ export default function ProductForm() {
     return progress;
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    if(!feedback.priceValid || !feedback.titleValid || selectedFiles.length === 0){
+      // 조건 불만족 알림 보내기
+      alert('제출 내용을 확인해 주세요.')
+    }    
+
+    const formData = new FormData()
+    formData.append('title', formData.title)
+    formData.append('price', formData.price)
+    formData.append('description', formData.description)
+    formData.append('category', formData.category)
+    formData.append('place', formData.place)
+    selectedFiles.forEach((file) => {
+        formData.append('images', file); // 키는 추후 수정 가능
+    });
+
+    try{
+      const response = await axios.post('POST-URL-HERE', formData)
+      redirect(response.data.productURL) // 작성된 페이지로 이동시키기
+    } catch(err) {
+      alert('제출에 문제가 발생했습니다.')
+      console.log(err)
+    }
+  }
+
   const selectItems = [
-    {value : '0', text : '전자기기'},
-    {value : '1', text : '가구'},
-    {value : '2', text : '도서'},
-    {value : '3', text : '의류'},
-]
+    {value : '0', text : '선택'},
+    {value : '1', text : '전자기기'},
+    {value : '2', text : '가구'},
+    {value : '3', text : '도서'},
+    {value : '4', text : '의류'}
+  ]
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -81,7 +135,9 @@ export default function ProductForm() {
         </div>
       </div>
 
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={onSubmit}>
+        {/* 사진 입력 필드 */}
+        <ImageUploader setSelectedFiles={setSelectedFiles}/>
         {/* 상품명 입력 필드 */}
         <div>
           <label className="block text-sm font-medium text-green-800">
@@ -128,7 +184,7 @@ export default function ProductForm() {
             가격
           </label>
           <div className="mt-1 relative rounded-md shadow-sm">
-            <input
+            <InputField
               type="number"
               name="price"
               value={formData.price}
@@ -154,7 +210,7 @@ export default function ProductForm() {
           <label className="block text-sm font-medium text-green-800">
             상품 설명
           </label>
-          <textarea
+          <TextArea
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -164,6 +220,18 @@ export default function ProductForm() {
             placeholder="상품 설명을 입력해주세요"
           />
         </div>
+
+        {/* 장소 입력 필드 */}
+        <div>
+          <label className="block text-sm font-medium text-green-800">
+              거래장소
+          </label>
+          <WritePlace 
+          name='place'
+          placeIndex={formData.place} 
+          onChange={handleChange}/>
+        </div>
+        
 
         {/* 도움말 섹션 */}
         <div className="bg-green-50 p-4 rounded-md mt-8 border border-green-200">
@@ -177,13 +245,13 @@ export default function ProductForm() {
 
         {/* 제출 버튼 */}
         <div className="mt-6">
-          <button
-            type="submit"
+          <Button
             className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 
               transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            onClick={onSubmit}
           >
             상품 등록하기
-          </button>
+          </Button>
         </div>
       </form>
     </div>
