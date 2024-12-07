@@ -7,7 +7,6 @@ import AuthPage from "./pages/AuthPage";
 import CategoryPage from "./pages/CategoryPage";
 import ChatMainPage from "./pages/ChatMainPage";
 import ChatPage from "./pages/ChatPage";
-import ChatroomPage from "./pages/ChatroomPage";
 import MyPage from "./pages/MyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductListPage from "./pages/ProductListPage";
@@ -29,9 +28,8 @@ function App() {
           <Route path="/products/:id" element={<ProductDetailPage />} />
 
           {/* 채팅 관련 라우트들을 계층적으로 구성 */}
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/chat/main" element={<ChatMainPage />} />
-          <Route path="/chat/room/:roomId" element={<ChatroomPage />} />
+          <Route path="/chat" element={<ChatMainPage />} />
+          <Route path="/chat/:roomId" element={<ChatPage />} />
 
           {/* 마이페이지 */}
           <Route path="/mypage" element={<MyPage />} />

@@ -8,6 +8,7 @@ export const fetchProductsByCategory = createAsyncThunk(
     try {
       const response = await axiosInstance.get(`/products/?page=${page}`);
       if (response.data.isSuccess) {
+        console.log(response.data.result.productList)
         return {
           // API 응답 구조에 맞게 수정
           products: response.data.result.productList,
