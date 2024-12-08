@@ -1,21 +1,30 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProductById } from '../redux/slices/productSlice';
+import { fetchProductById, clearCurrentProduct } from '../redux/slices/productSlice';
 
 function ProductDetailPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-// 셀렉터 분리
+  // Redux state 구조에 맞게 selector 수정
   const currentProduct = useSelector(state => state.product.currentProduct);
   const loading = useSelector(state => state.product.loading);
   const error = useSelector(state => state.product.error);
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchProductById(id));
+    // ID가 유효한지 확인
+    if (!id) {
+      console.error('Invalid product ID');
+      return;
     }
+    console.log('Fetching product with ID:', id); // 디버깅용
+    dispatch(fetchProductById(id));
+
+    // Cleanup function
+    return () => {
+      dispatch(clearCurrentProduct());
+    };
   }, [dispatch, id]);
 
   if (loading) {
@@ -50,10 +59,12 @@ function ProductDetailPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="space-y-4">
               <h1 className="text-2xl font-bold">{currentProduct.title}</h1>
-              <div className="text-xl font-semibold">{currentProduct.price?.toLocaleString()}원</div>
+              <div className="text-xl font-semibold">
+                {currentProduct.price?.toLocaleString()}원
+              </div>
               <div className="text-gray-600">
-                <p>판매자: {currentProduct.name}</p>
-                <p>학번: {currentProduct.studentId}</p>
+                <p>판매자: {currentProduct.nickname}</p>
+                {currentProduct.studentId && <p>학번: {currentProduct.studentId}</p>}
                 <p>카테고리: {currentProduct.category}</p>
               </div>
             </div>
