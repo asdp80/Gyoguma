@@ -4,10 +4,11 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './slices/authSlice';
 import productReducer from './slices/productSlice';
-import chatReducer from './slices/chatSlice';
+import websocketReducer from './slices//websocketSlice';
 import tradeReducer from './slices/tradeSlice';
 import reviewReducer from './slices/reviewSlice';
 import uiReducer from './slices/uiSlice';
+import websocketMiddleware from './slices/websocketMiddleware';
 
 const persistConfig = {
   key: 'root',
@@ -21,15 +22,15 @@ export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     product: productReducer,
-    chat: chatReducer,
     trade: tradeReducer,
     review: reviewReducer,
-    ui: uiReducer
+    ui: uiReducer,
+    websocket: websocketReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false // redux-persist를 위한 설정
-    })
+    }).concat(websocketMiddleware)
 });
 
 export const persistor = persistStore(store);
