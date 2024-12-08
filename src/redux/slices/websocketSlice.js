@@ -1,38 +1,51 @@
-// src/redux/websocketSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+// websocketSlice.js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  connected: false,
+  messages: [],
+  alarms : [],
+  error: null,
+};
 
 const websocketSlice = createSlice({
-  name: 'websocket',
-  initialState: {
-    isConnected: false,
-    messages: [], // message 타입 필요? -> 상대방의 챗과 나의 챗을 구별해야 함.
-    // 예시 : {type : 'buyer', message : '대화 가능할까요?'}
-  },
+  name: "websocket",
+  initialState,
   reducers: {
+    websocketStartConnect(state){
+      //미들웨어에서 연결
+    },
     websocketConnected(state) {
-      state.isConnected = true;
+      //연결 성공시 상태 변경
+      state.connected = true;
+    },
+    websocketStartDisconnect(state){
+      //미들웨어에서 연결 해제
     },
     websocketDisconnected(state) {
-      state.isConnected = false;
+      //연결 해제 성공시 상태 변경
+      state.connected = false;
     },
     websocketMessageReceived(state, action) {
       state.messages.push(action.payload);
     },
-    websocketSendMessage(state, action) {
-      // 메세지 전송은 미들웨어에서 다룸
+    websocketSendMessage(state, action){
+      //미들웨어에서 처리
     },
-    chatHistoryFetched(state, action) {
-      state.messages = Array.isArray(action.payload) ? action.payload : [{type : 'buyer', message : 'none'}, {type : 'seller', message : 'dddd'}];
+    websocketError(state, action) {
+      state.error = action.payload;
     },
   },
 });
 
 export const {
+  websocketStartConnect,
   websocketConnected,
+  websocketStartDisconnect,
   websocketDisconnected,
   websocketMessageReceived,
-  websocketSendMessage,
-  chatHistoryFetched,
+  websocketError,
+  websocketSendMessage
 } = websocketSlice.actions;
 
 export default websocketSlice.reducer;

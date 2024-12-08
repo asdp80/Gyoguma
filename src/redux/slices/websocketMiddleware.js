@@ -1,74 +1,50 @@
-// src/redux/websocketMiddleware.js
 import {
     websocketConnected,
+    websocketStartConnect,
+    websocketStartDisconnect,
     websocketDisconnected,
     websocketMessageReceived,
     websocketSendMessage,
-} from './websocketSlice';
+    websocketError,
+} from "./websocketSlice";
 
-const websocketMiddleware = (store) => {
-    let socket = null;
-    let reconnectInterval = null;
+export const createWebSocketMiddleware = (url) => {
+let socket;
 
-    const connectWebSocket = () => {
-        const wsUrl = 'ws://example.com/chat'; // WebSocket 서버 URL
-        socket = new WebSocket(wsUrl);
+return (store) => (next) => (action) => {
+    const { dispatch } = store;
 
-        socket.onopen = () => {
-            console.log('WebSocket connected');
-            store.dispatch(websocketConnected());
-            clearInterval(reconnectInterval); // 연결 성공 시 재연결 중단
-        };
+    if (websocketStartConnect.match(action)) {
+        if (socket) socket.close();
+        socket = new WebSocket(url);
 
+        socket.onopen = () => dispatch(websocketConnected());
         socket.onmessage = (event) => {
-            store.dispatch(websocketMessageReceived(JSON.parse(event.data)));
-        };
-
-        socket.onclose = () => {
-            console.log('WebSocket disconnected, attempting to reconnect...');
-            store.dispatch(websocketDisconnected());
-
-            // 일정 시간 후 재연결 시도
-            reconnectInterval = setInterval(() => {
-                if (!socket || socket.readyState === WebSocket.CLOSED) {
-                connectWebSocket();
-                }
-            }, 5000); // 5초 간격으로 재연결
-        };
-
-        socket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-    };
-
-    return (next) => (action) => {
-        switch (action.type) {
-            case 'websocket/connect':
-                if (!socket || socket.readyState === WebSocket.CLOSED) {
-                    connectWebSocket();
+            try {
+                const data = JSON.parse(event.data);
+                dispatch(websocketMessageReceived(data));
+            } catch (e) {
+                console.warn("Non-JSON message received:", event.data);
             }
-            break;
+        };
+        socket.onclose = () => dispatch(websocketDisconnected());
+        socket.onerror = (error) => dispatch(websocketError(error));
+    }
 
-        case websocketSendMessage.type:
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify(action.payload));
-            }
-            break;
-
-        case 'websocket/disconnect':
-            if (socket) {
-                socket.close();
-            }
-            socket = null;
-            clearInterval(reconnectInterval);
-            break;
-
-        default:
-            break;
+    if (websocketSendMessage.match(action)){
+        console.log(socket, socket.readyState)
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            console.log(action.payload)
+            socket.send(JSON.stringify(action.payload));
+        } else {
+            console.error("WebSocket is not connected.");
         }
+    }
 
-        return next(action);
-    };
+    if (websocketStartDisconnect.match(action)) {
+        if (socket) socket.close();
+    }
+
+    return next(action);
 };
-
-export default websocketMiddleware;
+};

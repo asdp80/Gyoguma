@@ -3,8 +3,8 @@ const ChatProduct = ({ product }) => {
   return (
     <div className="flex items-center p-4 bg-orange-50 border-b border-orange-300">
       <img
-        src={product.image}
-        alt={product.name}
+        src={product.image || "https://via.placeholder.com/64x64"}
+        alt={product.title}
         className="w-16 h-16 rounded-md mr-4"
       />
       <div>
