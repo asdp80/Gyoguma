@@ -10,6 +10,7 @@ import ChatPage from "./pages/ChatPage";
 import MyPage from "./pages/MyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductListPage from "./pages/ProductListPage";
+import AuthCallback from './pages/AuthCallback';
 
 function App() {
   return (
@@ -21,11 +22,12 @@ function App() {
 
           {/* 인증 관련 */}
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/oauth2/callback/google" element={<AuthCallback />} />
 
           {/* 카테고리 및 상품 관련 */}
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/products" element={<ProductListPage />} />
-          <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
 
           {/* 채팅 관련 라우트들을 계층적으로 구성 */}
           <Route path="/chat" element={<ChatMainPage />} />

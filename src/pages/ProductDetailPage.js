@@ -1,7 +1,24 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProductById, clearCurrentProduct } from '../redux/slices/productSlice';
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProductById, clearCurrentProduct } from "../redux/slices/productSlice";
+
+const categoryMap = {
+  1: "전공서적",
+  2: "운동용품",
+  3: "의약품",
+  4: "생필품",
+  5: "전자기기",
+  6: "의류/신발/악세사리",
+  7: "심부름",
+  8: "기타",
+};
+
+const statusMap = {
+  "ON_SALED": "판매중",
+  "RESERVED": "예약중",
+  "SOLD_OUT": "판매완료",
+};
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -12,13 +29,14 @@ function ProductDetailPage() {
   const loading = useSelector(state => state.product.loading);
   const error = useSelector(state => state.product.error);
 
+
   useEffect(() => {
     // ID가 유효한지 확인
     if (!id) {
-      console.error('Invalid product ID');
+      console.error("Invalid product ID");
       return;
     }
-    console.log('Fetching product with ID:', id); // 디버깅용
+    console.log("Fetching product with ID:", id); // 디버깅용
     dispatch(fetchProductById(id));
 
     // Cleanup function
@@ -58,14 +76,13 @@ function ProductDetailPage() {
           {/* 기본 정보 */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="space-y-4">
-              <h1 className="text-2xl font-bold">{currentProduct.title}</h1>
+              <h1 className="text-2xl font-bold">{currentProduct?.title}</h1>
               <div className="text-xl font-semibold">
-                {currentProduct.price?.toLocaleString()}원
+                {currentProduct?.price?.toLocaleString()}원
               </div>
               <div className="text-gray-600">
-                <p>판매자: {currentProduct.nickname}</p>
-                {currentProduct.studentId && <p>학번: {currentProduct.studentId}</p>}
-                <p>카테고리: {currentProduct.category}</p>
+                <p>판매자: {currentProduct?.nickname}</p>
+                <p>상태: {currentProduct?.status ? statusMap[currentProduct.status] : "상태 없음"}</p>
               </div>
             </div>
           </div>
@@ -73,16 +90,8 @@ function ProductDetailPage() {
           {/* 구매 옵션 */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span>수량</span>
-                <select className="border rounded px-2 py-1">
-                  {[1,2,3,4,5].map(num => (
-                    <option key={num} value={num}>{num}</option>
-                  ))}
-                </select>
-              </div>
+
               <div className="border-t pt-4">
-                <p className="text-sm text-gray-600">배송비 무료 • 직거래</p>
               </div>
               <div className="flex gap-2">
                 <button className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">

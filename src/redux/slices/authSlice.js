@@ -3,6 +3,24 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from "../../api/axiosInstance";  // axiosInstance 유지
 import {API} from "../../api/index";
 
+export const googleLogin = createAsyncThunk(
+  'auth/googleLogin',
+  async (code, { rejectWithValue }) => {
+    try {
+      const response = await API.auth.handleOAuthCallback(code);
+
+      if (response.data && response.data.isSuccess) {
+        return response.data.result;
+      } else {
+        return rejectWithValue(response.data?.message || '알 수 없는 오류');
+      }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
@@ -98,6 +116,23 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || '회원가입에 실패했습니다.';
+
+      })
+      // Google Login
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem('token', action.payload.token);
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Google 로그인에 실패했습니다.';
       });
   }
 });
