@@ -9,7 +9,7 @@ const ChatMessage = ({ messages }) => {
         <div
           key={index}
           className={`mb-3 p-3 rounded-lg shadow-md ${
-            message.type === "buyer"
+            message.sender === "buyer" //실제로는 현재 유저 === 상품 작성자
               ? "bg-green-100 self-start"
               : "bg-purple-100 self-end"
           }`}
