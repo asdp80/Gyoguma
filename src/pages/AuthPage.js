@@ -1,5 +1,5 @@
 // src/pages/AuthPage.js
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/slices/authSlice';
@@ -7,26 +7,17 @@ import { login } from '../redux/slices/authSlice';
 const AuthPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector(state => state.auth);
+  const { loading, error } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState({
+    email: 'test@example.com',
+    password: 'test1234',
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const loginRequest = {
-      name: "테스트",
-      email: "test@example.com",
-      password: "test1234",
-      gender: 0,
-      birthYear: 0,
-      birthMonth: 0,
-      birthDay: 0,
-      address: "서울시강남구",
-      specAddress: "테헤란로123",
-      role: "ADMIN"
-    };
-
     try {
-      const resultAction = await dispatch(login(loginRequest));
+      const resultAction = await dispatch(login(formData));
 
       if (login.fulfilled.match(resultAction)) {
         alert('로그인 성공!');
@@ -51,10 +42,7 @@ const AuthPage = () => {
         <div className="space-y-4">
           <div className="bg-gray-100 p-4 rounded">
             <pre className="text-xs whitespace-pre-wrap">
-              {JSON.stringify({
-                email: "test@example.com",
-                password: "test1234"
-              }, null, 2)}
+              {JSON.stringify(formData, null, 2)}
             </pre>
           </div>
           <button

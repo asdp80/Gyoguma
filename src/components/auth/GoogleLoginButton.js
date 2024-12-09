@@ -2,10 +2,14 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { API } from '../../api';
+import { googleLogin } from '../../redux/slices/authSlice';
 
 const GoogleLoginButton = () => {
+  const dispatch = useDispatch();
+
   const handleGoogleLogin = async () => {
     try {
+      // Google 인증 URL 가져오기
       const response = await API.auth.getGoogleAuthUrl();
       if (response.data?.result?.authUrl) {
         window.location.href = response.data.result.authUrl;

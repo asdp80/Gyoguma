@@ -1,4 +1,3 @@
-
 // src/pages/AuthCallback.js
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +21,7 @@ const AuthCallback = () => {
         })
         .catch((error) => {
           console.error('Google login failed:', error);
-          navigate('/login');
+          navigate('/login', { state: { errorMessage: 'Google 로그인 실패' } });
         });
     }
   }, [dispatch, navigate, searchParams]);
@@ -32,7 +31,7 @@ const AuthCallback = () => {
   }
 
   if (error) {
-    return <div>로그인 처리 중 오류가 발생했습니다.</div>;
+    return <div>로그인 처리 중 오류가 발생했습니다: {error}</div>;
   }
 
   return null;
