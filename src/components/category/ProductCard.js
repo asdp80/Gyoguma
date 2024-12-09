@@ -11,6 +11,8 @@ const ProductCard = ({ product }) => {
     nickname,
     createdAt
   } = product;
+  // 참고 : 현재 DTO에서 productId를 안보내줌 (categoryId, createdAt, nickname, price, status, title, updatedAt) <- 이게 전부임
+  // 따라서 각 항목에 productId를 이용해 상세 페이지로 이동할 수가 없음 ㅠㅠ
 
   // 간단한 날짜 포맷팅 함수
   const formatDate = (dateString) => {
