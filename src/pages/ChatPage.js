@@ -14,12 +14,14 @@ import ChatParticipants from '../components/chat/ChatParticipants';
 import ChatProduct from '../components/chat/ChatProduct'
 import ChatCompleteButton from '../components/chat/ChatCompleteButton';
 import { useParams } from 'react-router-dom';
+import ScheduleContainer from '../components/chat/ScheduleContainer';
 
 function ChatPage() {
   const dispatch = useDispatch()
   const { connected, messages=[] } = useSelector((state) => state.websocket)
   const [input, setInput] = useState('')
   const [complete, setComplete] = useState(false)
+  const [showSchedule, setShowSchedule] = useState(false);
   const params = useParams()
 
   
@@ -75,12 +77,28 @@ function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col w-96 h-[724px] mx-auto border border-orange-300 rounded-lg bg-orange-50">
-      <ChatParticipants buyerName={'상대방'} />
-      <ChatProduct product={{title : 'title', price : '3020'}} />
-      <ChatMessage messages={messages} />
-      <ChatInput onClick={sendMessage} value={input} onChange={(e) => setInput(e.target.value)} />
-      <ChatCompleteButton Complete={complete} setComplete={setComplete} />
+    <div className='flex flex-row justify-center space-x-16 p-16'>
+      <div className="flex flex-col w-96 h-[724px] mx-auto border border-orange-300 rounded-lg bg-orange-50">
+        <ChatParticipants buyerName={'상대방'} />
+        <ChatProduct product={{title : 'title', price : '3020'}} />
+        <ChatMessage messages={messages} />
+        <ChatInput onClick={sendMessage} value={input} onChange={(e) => setInput(e.target.value)} />
+        <div className='flex flex-row'>
+          <div className="w-full p-4 bg-orange-100 border-t border-orange-300 flex justify-start rounded-b-lg">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={() => setShowSchedule((prev) => !prev)}
+              >
+                {showSchedule ? "스케줄표 숨기기" : "스케줄표 보이기"}
+            </button>
+          </div>
+          <ChatCompleteButton Complete={complete} setComplete={setComplete} />
+        </div>
+      </div>
+      <div className={`transition-all duration-300 ease-in-out transform
+      ${showSchedule ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}`}>
+        {showSchedule && <ScheduleContainer />}
+      </div>
     </div>
   );
 }
