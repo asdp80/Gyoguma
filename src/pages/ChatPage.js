@@ -7,7 +7,7 @@ import ChatProduct from '../components/chat/ChatProduct'
 import ChatCompleteButton from '../components/chat/ChatCompleteButton';
 import ScheduleContainer from '../components/chat/ScheduleContainer';
 import { useParams } from 'react-router-dom';
-import { api } from '../services/api';
+import { API } from '../api/index';
 import { connect, sendMessage, leaveChatRoom, enterChatRoom as enterChatRoomSocket, disconnect } from '../services/socket';
 
 function ChatPage() {
@@ -56,7 +56,7 @@ function ChatPage() {
   useEffect(() => {
     const initializeChatRoom = async () => {
       try{
-        const messageResponse = await api.getChatMessages(params.roomId);
+        const messageResponse = await API.chat.getMessages(params.roomId);
         setMessages(messageResponse.data);
       } catch (error) {
         console.error('Error initializing chat room:', error);

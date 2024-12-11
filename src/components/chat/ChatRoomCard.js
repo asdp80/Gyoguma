@@ -7,21 +7,21 @@ import { Link } from "react-router-dom";
 const ChatRoomCard = ({ room }) => {
   return (
     <Link
-      to={`/chat/${room.id}`}
+      to={`/chat/${room.roomId}`}
       className="block p-4 bg-white shadow-md rounded-md hover:bg-orange-50 transition"
     >
       <div className="flex items-center">
         <img
-          src={room.avatar}
-          alt={`${room.name} Avatar`}
+          src={room.product}
+          alt={`${room.product} Avatar`}
           className="w-12 h-12 rounded-full mr-4"
         />
         <div>
-          <h3 className="text-lg font-bold">{room.name}</h3>
-          <p className="text-sm text-gray-600 truncate">{room.lastMessage}</p>
+          <h3 className="text-lg font-bold">{room.seller /* 실제론 판매자/구매자 구별해야함 */}</h3>
+          <p className="text-sm text-gray-600 truncate">{room.message}</p>
         </div>
       </div>
-      <p className="text-sm text-gray-400 text-right mt-2">{room.lastActive}</p>
+      <p className="text-sm text-gray-400 text-right mt-2">{room.time}</p>
     </Link>
   );
 };
