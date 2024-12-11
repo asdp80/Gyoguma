@@ -4,31 +4,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from "../../api/axiosInstance";
 import initialState from "./productInitialState"
 
-// export const fetchProductsByCategory = createAsyncThunk(
-//   'products/fetchByCategory',
-//   async ({ categoryId, page = 1 }, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get(`/products/?page=${page}`);
-//       if (response.data.isSuccess) {
-//         return {
-//           products: response.data.result.productList,
-//           totalPages: response.data.result.totalPage,
-//           totalElements: response.data.result.totalElements,
-//           hasMore: !response.data.result.isLast
-//         };
-//       }
-//       return rejectWithValue(response.data.message);
-//     } catch (error) {
-//       console.error('API Error:', error); // 에러 확인
-//       return rejectWithValue(error.response?.data?.message || '상품 로드 실패');
-//     }
-//   }
-// );
+
 
 export const fetchProductsByCategory = createAsyncThunk(
   'products/fetchByCategory',
   async ({ categoryId }, { rejectWithValue }) => {
     try {
+      // 모든 페이지의 상품을 가져오는 로직
       // 우선 1페이지를 가져와서 전체 페이지 수를 확인
       const firstPageResponse = await axiosInstance.get('/products/?page=1');
 
@@ -77,6 +59,7 @@ const productSlice = createSlice({
   },
   reducers: {
     setCurrentCategory: (state, action) => {
+      //카테고리 변경 시 상태 초기화
       state.currentCategory = action.payload;
       state.page = 1;
       state.hasMore = true;
@@ -85,6 +68,7 @@ const productSlice = createSlice({
       }
     },
     setPage: (state, action) => {
+      //페이지 번호 설정
       state.page = action.payload;
     },
     clearCurrentProduct: (state) => {
@@ -92,12 +76,15 @@ const productSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
+    //비동기 상태 처리
     builder
       .addCase(fetchProductsByCategory.pending, (state) => {
+        //로딩 시작
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+        //데이터 로드 성공 / 카테고리별 상품 필터링 및 저장
         state.loading = false;
         const { products, hasMore, totalPages, totalElements } = action.payload;
 
@@ -122,6 +109,7 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductsByCategory.rejected, (state, action) => {
+        //에러 처리
         state.loading = false;
         state.error = action.payload || '상품 로드 실패';
       })

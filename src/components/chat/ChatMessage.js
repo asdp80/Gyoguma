@@ -4,9 +4,12 @@ import React from "react";
 // 유저 정보를 가져와야함.
 
 const ChatMessage = ({ messages }) => {
+  const validMessages = Array.isArray(messages) ? messages : []
+  console.log(validMessages)
+  if (validMessages.length === 0) console.log('Invalid Messages Received : ', messages)
   return (
     <div className="flex flex-col p-4 flex-grow overflow-y-auto bg-orange-50 scrollbar-thin scrollbar-corner-transparent scrollbar-thumb-gray-200 scrollbar-track-transparent">
-      {messages?.map((message, index) => (
+      {validMessages?.map((message, index) => (
         <div
           key={index}
           className={`mb-3 p-3 rounded-lg shadow-md ${

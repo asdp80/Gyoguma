@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
+  // product 객체에서 필요한 정보들을 구조분해할당
   const {
     productId,
     title,
@@ -11,8 +12,6 @@ const ProductCard = ({ product }) => {
     nickname,
     createdAt
   } = product;
-  // 참고 : 현재 DTO에서 productId를 안보내줌 (categoryId, createdAt, nickname, price, status, title, updatedAt) <- 이게 전부임
-  // 따라서 각 항목에 productId를 이용해 상세 페이지로 이동할 수가 없음 ㅠㅠ
 
   // 간단한 날짜 포맷팅 함수
   const formatDate = (dateString) => {
@@ -40,6 +39,7 @@ const ProductCard = ({ product }) => {
   const defaultImageUrl = 'data:image/svg+xml;charset=UTF-8,%3csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3e%3crect width="200" height="200" fill="%23CCCCCC"/%3e%3ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23666666"%3e이미지 없음%3c/text%3e%3c/svg%3e';
 
   return (
+    // 상품 상세 페이지로 이동하는 링크
     <Link to={`/product/${productId}`} className="block">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
         <div className="relative aspect-square">
@@ -59,6 +59,7 @@ const ProductCard = ({ product }) => {
             </div>
           )}
         </div>
+        {/*상품 정보 영역 */}
         <div className="p-4">
           <h3 className="font-medium text-gray-900 mb-1 truncate">
             {title || '제목 없음'}
