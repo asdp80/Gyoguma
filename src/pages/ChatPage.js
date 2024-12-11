@@ -1,80 +1,94 @@
 // 채팅 페이지
-import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  websocketStartConnect,
-  websocketStartDisconnect,
-  websocketSendMessage,
-  websocketMessageReceived
-} from '../redux/slices/websocketSlice'
 import ChatInput from '../components/chat/ChatInput';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatParticipants from '../components/chat/ChatParticipants';
 import ChatProduct from '../components/chat/ChatProduct'
 import ChatCompleteButton from '../components/chat/ChatCompleteButton';
-import { useParams } from 'react-router-dom';
 import ScheduleContainer from '../components/chat/ScheduleContainer';
+import { useParams } from 'react-router-dom';
+import { api } from '../services/api';
+import { connect, sendMessage, leaveChatRoom, enterChatRoom as enterChatRoomSocket, disconnect } from '../services/socket';
 
 function ChatPage() {
-  const dispatch = useDispatch()
-  const { connected, messages=[] } = useSelector((state) => state.websocket)
   const [input, setInput] = useState('')
+  const [messages, setMessages] = useState([])
   const [complete, setComplete] = useState(false)
-  const [showSchedule, setShowSchedule] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false)
+  const [stompClient, setStompClient] = useState(null)
   const params = useParams()
 
-  
+  // 채팅방에 연결. socket을 연결, 구독하고 입장 메세지를 publish합니다.
+  useEffect(() => {
+    if(!stompClient || stompClient.connected) {
+      const client = connect(params.roomId, (message) => {
+        setMessages((prev) => [...prev, JSON.parse(message.body)])
+      })
 
-  const userType = 'buyer'
-  /* 상품 정보를 가져온 뒤, 작성자 ID와 비교 -> 동일하다면 'seller', 다르다면 'buyer'로 userType 정의 */
-  /* 일단은 구매자로 가정함 */
+      let hasEnteredRoom = false; // Add flag to prevent double entry
 
-  /* 웹소켓에 연결, 로그인 완료 되자마자 연결해야 함. 임시로 여기서 연결하겠음. */
-  const connectWebSocket = useCallback(() => {
-    if (!connected) { // 이미 연결되어 있다면 재연결하지 않음
-      dispatch(websocketStartConnect());
-    }
-  },[dispatch, connected])
-
-  const disconnectWebSocket = useCallback(() => { // 웹소켓 연결 끊기, 세션 종료시 실행해야 함.
-    dispatch(websocketStartDisconnect())
-  },[dispatch])
-
-  const fetchChatData = useCallback(async () => {
-    try{
-      const response = await axios.get(`/api/chat/${params.roomId}`)
-      // 여기서 채팅 정보를 가져와 기본적인 정보를 초기화합니다
-      const chatData = response.data.messages
-
-      // 유저 정보를 초기화합니다.
-
-      // 기존의 메세지들을 표시합니다
-      chatData.array.forEach(message => {
-        dispatch(websocketMessageReceived(message))
-      });
-    } catch (e) {
-      console.log('Fetching chatData failed : ',e)
-    }
-    
-  },[params.roomId, dispatch])
-  
-  useEffect(() => { //마운트시 기존 채팅 가져오기
-    connectWebSocket()
-    fetchChatData()
-    //return () => {disconnectWebSocket()}
-  },[connectWebSocket, fetchChatData])
-
-  
-
-  /* 메세지 보내기. 연결되어있을 때만 보냄. */
-  const sendMessage = () => {
-    if(input.trim() && connected) {
-      dispatch(websocketSendMessage({sender : userType, message : input}))
+      client.onConnect = () => {
+        console.log('WebSocket connected!');
+        client.subscribe(`/sub/chat/room/${params.roomId}`, (message) => {
+          setMessages((prev) => [...prev, JSON.parse(message.body)]);
+        });
+        if (!hasEnteredRoom) { // Only send ENTER message once
+        hasEnteredRoom = true;
+        const enterMessage = {
+          roomId: params.roomId,
+          senderId: 1,
+          nickname: 'User1',
+          message: '',
+          type: 'ENTER',
+        };
+        enterChatRoomSocket(client, enterMessage);
+        }
+      };
+      setStompClient(client)
     }
 
-    setInput('')
-  }
+    return () => {
+      if(stompClient) disconnect(params.roomId)
+    }
+  },[params.roomId, stompClient])
+
+  // 채팅방 초기화, 과거의 채팅들을 가져옵니다.
+  useEffect(() => {
+    const initializeChatRoom = async () => {
+      try{
+        const messageResponse = await api.getChatMessages(params.roomId);
+        setMessages(messageResponse.data);
+      } catch (error) {
+        console.error('Error initializing chat room:', error);
+      }
+    }
+
+    initializeChatRoom()
+  }, [params.roomId])
+
+  // socket에 신규 메세지를 publish합니다.
+  const handleSendMessage = (message) => {
+    const chatMessage = {
+      roomId: params.roomId,
+      senderId: 1,
+      nickname: 'User1',
+      message: message,
+      type: 'TALK',
+    };
+    sendMessage(stompClient, chatMessage);
+  };
+
+  // leave 메세지를 publish하고 구독과 연결을 해지합니다.
+  const handleLeaveChatRoom = () => {
+    const leaveMessage = {
+      roomId: params.roomId,
+      senderId: 1,
+      nickname: 'User1',
+      message: '',
+      type: 'LEAVE',
+    };
+    leaveChatRoom(stompClient, leaveMessage);
+  };
 
   return (
     <div className='flex flex-row justify-center space-x-16 p-16'>
@@ -82,7 +96,7 @@ function ChatPage() {
         <ChatParticipants buyerName={'상대방'} />
         <ChatProduct product={{title : 'title', price : '3020'}} />
         <ChatMessage messages={messages} />
-        <ChatInput onClick={sendMessage} value={input} onChange={(e) => setInput(e.target.value)} />
+        <ChatInput onSendMessage={handleSendMessage} value={input} onChange={(e) => setInput(e.target.value)} />
         <div className='flex flex-row'>
           <div className="w-full p-4 bg-orange-100 border-t border-orange-300 flex justify-start rounded-b-lg">
             <button
@@ -93,6 +107,7 @@ function ChatPage() {
             </button>
           </div>
           <ChatCompleteButton Complete={complete} setComplete={setComplete} />
+          <button onClick={handleLeaveChatRoom}>채팅방 나가기</button>
         </div>
       </div>
       <div className={`transition-all duration-300 ease-in-out transform
