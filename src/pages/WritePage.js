@@ -1,8 +1,9 @@
 // src/components/Write/ProductForm.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API } from '../api/index';
 import ProductForm from '../components/Write/ProductForm'
+import { useSelector } from 'react-redux';
 
 const WritePage = () => {
   // 상품 정보를 제어하는 state
@@ -19,7 +20,13 @@ const WritePage = () => {
   const [selectedFiles, setSelectedFiles] = useState([])
 
   // 사용자 정보
-  
+  const {userEmail, isAuthenticated} = useSelector((state) => state.auth)
+  useEffect(() => {
+    if(!isAuthenticated){
+      alert('로그인이 필요한 서비스입니다.')
+      navigate('/')
+    }
+  })
 
   // 피드백 정보를 관리하는 상태입니다
   const [feedback, setFeedback] = useState({
