@@ -3,7 +3,7 @@ import React from "react";
 import Layout from "./components/layout/Layout";
 
 import HomePage from "./pages/HomePage";
-import AuthPage from "./pages/AuthPage";
+//import AuthPage from "./pages/AuthPage";
 import CategoryPage from "./pages/CategoryPage";
 import ChatMainPage from "./pages/ChatMainPage";
 import ChatPage from "./pages/ChatPage";
@@ -22,9 +22,10 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* 홈 화면 */}
           <Route index element={<HomePage />} />
+          <Route path="/login?logout" element={<HomePage />} />
 
           {/* 인증 관련 */}
-          <Route path="/auth" element={<AuthPage />} />
+          {/*<Route path="/auth" element={<AuthPage />} />*/}
           <Route path="/users/addInfo" element={<AddInfoPage />} />
           <Route path="/users/addInfo" element={<AddInfoPage />} />
 

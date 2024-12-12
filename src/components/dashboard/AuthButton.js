@@ -3,8 +3,11 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import axiosInstance from '../../api/axiosInstance';
+import { useDispatch } from 'react-redux';
+import { loginSuccess, setError } from '../../redux/slices/authSlice'
 
 function AuthButton() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // URL의 토큰 파라미터 체크
@@ -21,10 +24,27 @@ function AuthButton() {
       // URL 파라미터 제거
       window.history.replaceState({}, document.title, window.location.pathname);
 
+      // 토큰을 받아온 후, 해당 토큰을 인증에 사용해 현재 유저 이메일을 받아옴
+      const getUserEmail = async () => {
+        try {
+          const response = await axiosInstance.get('/members/byToken');
+          const userEmail = response.data.email
+          console.log('User Email:', userEmail);
+          // dispatch로 전역에서 이용할 수 있도록 redux state 갱신
+          dispatch(loginSuccess({userEmail, accessToken, refreshToken}))
+          // 이후 원하는 컴포넌트에서 useSelector로 언제든 로그인 정보 이용 가능
+        } catch (error) {
+          console.error('Failed to fetch user email:', error);
+          dispatch(setError(error))
+        }
+      }
+
+      getUserEmail()
+
       // 홈으로 리다이렉트 (또는 원하는 페이지로)
       navigate('/');
     }
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   const handleLogin = async () => {
     try {
@@ -34,23 +54,8 @@ function AuthButton() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await axiosInstance.post('/logout');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      navigate('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  // 로그인 상태 확인
-  const isAuthenticated = !!localStorage.getItem('access_token');
-
   return (
     <div className="flex items-center gap-4">
-      {!isAuthenticated ? (
         <>
           <button
             onClick={handleLogin}
@@ -65,14 +70,6 @@ function AuthButton() {
             회원가입
           </Link>
         </>
-      ) : (
-        <button
-          onClick={handleLogout}
-          className="text-gyoguma-dark hover:text-gyoguma"
-        >
-          로그아웃
-        </button>
-      )}
     </div>
   );
 }
