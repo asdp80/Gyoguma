@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import axios from "axios";
 
 const AddInfoPage = () => {
   const [userInfo, setUserInfo] = useState({
@@ -36,7 +37,15 @@ const AddInfoPage = () => {
     setError(null);
 
     try {
-      await axiosInstance.post('/users/addInfo', userInfo);
+      //await axiosInstance.post('/users/addInfo', userInfo);
+      const response = await axios.post('http://localhost:8080/users/addInfo',userInfo ,{
+        headers : {
+          'Authorization' : `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type' : 'application/json'
+        },
+        withCredentials : 'include'
+      })
+      console.log(response)
       navigate('/');
     } catch (error) {
       setError(error.response?.data?.message || '정보 업데이트 중 오류가 발생했습니다.');
