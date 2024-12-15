@@ -1,0 +1,38 @@
+[33me93d355[m[33m ([m[1;36mHEAD -> [m[1;32mImageUploadTest[m[33m, [m[1;31morigin/ImageUploadTest[m[33m, [m[1;31mgyoguma/ImageUploadTest[m[33m, [m[1;32mWritePage[m[33m)[m fix: 이미지 업로드 로직 수정 및 불필요한 UI/UX 정리
+[33m00151e0[m[33m ([m[1;31morigin/WritePage[m[33m)[m 수정
+[33m7c235cb[m 1212 - 로그인 연결 및 redux에서 사용자정보 전역 관리
+[33mef39102[m 로그인 반영 및 채팅 수정
+[33m811124a[m 채팅 통합(유저 인증 제외)
+[33m76dea0f[m 시간표 추가
+[33mc44151a[m WritePage 보완
+[33mcafb794[m Merge remote-tracking branch 'origin/master'
+[33m2d52748[m Merge pull request #9 from JeongHwanjun/chatting
+[33m98caf41[m 상품 디테일 페이지 / 로그인 구현
+[33m13ee586[m [fix] 채팅 수정 및 브랜치 분리
+[33mabce8a8[m 상품 디테일 페이지 / 로그인 구현
+[33m7f9df21[m Initial commit
+[33mdd43a95[m Merge pull request #8 from JeongHwanjun/master
+[33m43c11c0[m [feat]1207-chat 작성(미완성)
+[33mae59454[m 라우팅/axios를 통한 백엔드 연결
+[33m3471cf2[m 라우팅/axios를 통한 백엔드 연결
+[33mfdd24ae[m Merge pull request #7 from JeongHwanjun/master
+[33md1ba954[m [feat] 1205-Write작성 및 관련 부분 수정
+[33m1a0257e[m Merge pull request #6 from JeongHwanjun/master
+[33mfa710e5[m [feat]1204-product 컴포넌트와 페이지 작성
+[33m0f62da8[m Merge pull request #5 from JeongHwanjun/master
+[33m12e03ea[m Merge branch 'asdp80:master' into master
+[33m32d1d07[m common components 작성, public 이미지 업로드
+[33m08e11bd[m Merge pull request #4 from JeongHwanjun/master
+[33mc0b2be0[m logo 이미지 추가
+[33m58a2de4[m [feat]ImageUpload 기능 추가, axios 설치, 텍스트 입력에 onChange 추가
+[33mac5fc51[m ImageUploader, InputField, TextArea 구현
+[33me4d004a[m 라우팅/메인페이지,레이아웃/프로덕트 컴포넌트 작성
+[33m6ab936a[m Merge pull request #3 from JeongHwanjun/master
+[33m378f5fb[m 컴포넌트 구체화
+[33m56d0d49[m Merge pull request #2 from JeongHwanjun/master
+[33m163762e[m [feat] eslint, prettier 설정 및 그에 따른 파일 내용 수정
+[33m7bbe1f6[m 라우터 셋팅
+[33m8e9e120[m Merge pull request #1 from JeongHwanjun/master
+[33m1c9e63d[m [feat] 페이지 및 컴포넌트 구조 추가 설계
+[33mf856cf9[m 컴포넌트 구조 설계
+[33mf2827b2[m Initialize project using Create React App
